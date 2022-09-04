@@ -11,7 +11,9 @@ return function(props)
 
 		BackgroundColor3 = props.BackgroundColor;
 
+		Font = Enum.Font.Arial;
 		Text = props.Text;
+		TextSize = 16;
 
 		[Fusion.Children] = {
 			New "UICorner" {

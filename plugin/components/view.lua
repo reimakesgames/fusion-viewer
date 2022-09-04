@@ -8,6 +8,7 @@ local XYTextBox = require(script.Parent:WaitForChild("xytextbox"))
 local Button = require(script.Parent:WaitForChild("button"))
 
 local ViewportSize = State(UDim2.fromOffset(1280, 720))
+local Selected = State(nil)
 
 local LoadedComponent = State(New "Frame" {
 	AnchorPoint = Vector2.new(0, 0);
@@ -15,6 +16,13 @@ local LoadedComponent = State(New "Frame" {
 })
 
 return function(props)
+	props.ReloadTree:Connect(function()
+		local Props = require(script.Parent.Parent.ReloadProps:Invoke())
+		print(Props)
+		LoadedComponent:get():Destroy()
+		LoadedComponent:set(require(Selected:get())(Props))
+	end);
+
 	New "Frame" {
 		Parent = props.Parent;
 
@@ -88,14 +96,14 @@ return function(props)
 				TextSize = 16;
 
 				OnActivated = function()
-					print("wtg")
-					local Selected = Selection:Get()
-					print(Selected)
-					if Selected[1]:IsA("ModuleScript") then
-						local Props = require(script.Parent.Parent.Viewer.props)
+					local CurrentlySelected = Selection:Get()
+					print(CurrentlySelected)
+					Selected:set(CurrentlySelected[1])
+					if Selected:get():IsA("ModuleScript") then
+						local Props = require(script.Parent.Parent.ReloadProps:Invoke())
 						print(Props)
 						LoadedComponent:get():Destroy()
-						LoadedComponent:set(require(Selected[1])(Props))
+						LoadedComponent:set(require(Selected:get())(Props))
 					end
 				end
 			};
